@@ -33,6 +33,7 @@
 
     <modules>
         <module>snowfall-core</module>
+        <module>snowfall-scaffolding</module>
         <module>snowfall-test</module>
     </modules>
 
