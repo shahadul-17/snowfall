@@ -59,6 +59,30 @@ public final class DateTimeFormatter {
         return formatTime(timeInMilliseconds * 1.0);
     }
 
+    /**
+     * Formats the given time in nanoseconds.
+     * @param timeInNanoseconds Time (in nanoseconds) to format.
+     * @return The given time in a human-readable format.
+     */
+    public static String formatNanosecondsTime(final double timeInNanoseconds) {
+        var time = timeInNanoseconds;
+
+        if (time < 1_000_000) { return formatTime(time, "ns"); }
+
+        time /= 1_000_000;          // converts nanoseconds to milliseconds...
+
+        return formatTime(time);
+    }
+
+    /**
+     * Formats the given time in nanoseconds.
+     * @param timeInNanoseconds Time (in nanoseconds) to format.
+     * @return The given time in a human-readable format.
+     */
+    public static String formatNanosecondsTime(final long timeInNanoseconds) {
+        return formatNanosecondsTime(timeInNanoseconds * 1.0);
+    }
+
     public static DateFormat createDateFormat() {
         return createDateFormat(DEFAULT_DATE_TIME_FORMAT_PATTERN);
     }
