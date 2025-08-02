@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="snowfall-test" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="com.snowfall.test.Main" />
+    <module name="snowfall-test" />
+    <option name="PROGRAM_PARAMETERS" value="--applicationName test --instanceId a --uniqueValue 1" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
