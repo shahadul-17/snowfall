@@ -11,40 +11,16 @@ public final class CollectionUtilities {
 
     private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
-    public static byte[] getEmptyByteArray() {
-        return EMPTY_BYTE_ARRAY;
-    }
+    public static byte[] getEmptyByteArray() { return EMPTY_BYTE_ARRAY; }
+
+    public static <Type> List<Type> getEmptyList() { return Collections.emptyList(); }
 
     public static boolean sequenceEqual(final byte[] arrayA, final byte[] arrayB) {
-        // if both the arrays are not of the same size, we shall return false...
-        if (arrayA.length != arrayB.length) { return false; }
-
-        // iterates over both the arrays...
-        for (var i = 0; i < arrayA.length; i++) {
-            // if both the values of same position don't match,
-            // we shall return false...
-            if (arrayA[i] != arrayB[i]) { return false; }
-        }
-
-        // otherwise, both the sequences matched
-        // and we shall return true...
-        return true;
+        return Arrays.equals(arrayA, arrayB);
     }
 
     public static <Type> boolean sequenceEqual(final Type[] arrayA, final Type[] arrayB) {
-        // if both the arrays are not of the same size, we shall return false...
-        if (arrayA.length != arrayB.length) { return false; }
-
-        // iterates over both the arrays...
-        for (var i = 0; i < arrayA.length; i++) {
-            // if both the values of the same position don't match,
-            // we shall return false...
-            if (!arrayA[i].equals(arrayB[i])) { return false; }
-        }
-
-        // otherwise, both the sequences matched
-        // and we shall return true...
-        return true;
+        return Arrays.equals(arrayA, arrayB);
     }
 
     /**
@@ -65,8 +41,8 @@ public final class CollectionUtilities {
             final int itemCountPerBlock) {
         // if the list is null or empty...
         final List<Type> itemList = items == null || items.length == 0
-                ? new ArrayList<>(0)        // <-- we shall create an empty list...
-                : Arrays.asList(items);                 // <-- otherwise, we shall create a list containing all the items in the array...
+                ? getEmptyList()               // <-- we shall create an empty list...
+                : Arrays.asList(items);        // <-- otherwise, we shall create a list containing all the items in the array...
 
         // calling the split method that takes a list of items and item count per block...
         return split(itemList, itemCountPerBlock);
@@ -91,7 +67,7 @@ public final class CollectionUtilities {
         // if the list is null or empty...
         if (items == null || items.isEmpty()) {
             // we shall return empty blocks...
-            return new ArrayList<>(0);
+            return getEmptyList();
         }
 
         // storing the item count...

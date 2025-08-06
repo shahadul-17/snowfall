@@ -1,8 +1,11 @@
 package com.snowfall.core;
 
 import com.snowfall.core.text.JsonSerializer;
+import com.snowfall.core.utilities.CollectionUtilities;
 import com.snowfall.core.utilities.ObjectUtilities;
 import com.snowfall.core.utilities.StringUtilities;
+
+import java.util.Arrays;
 
 public final class Tuple {
 
@@ -28,12 +31,12 @@ public final class Tuple {
 
     @SuppressWarnings(value = "unchecked")
     public <Type> Type get(final int elementPosition, final Class<Type> classOfType) {
-        final var elementIndex = elementPosition - 1;
-        final var element = elementIndex > -1 && elementIndex < elements.length
-                ? elements[elementIndex] : null;
+        if (elementPosition < 1 || elementPosition > elements.length) { return null; }
 
-        // if the element is null or the types mismatch, we shall return null...
-        if (element == null || !classOfType.isAssignableFrom(element.getClass())) { return null; }
+        final var element = elements[elementPosition - 1];
+
+        // if the element is null or the class of type is null or the type mismatches, we shall return null...
+        if (element == null || classOfType == null || !classOfType.isAssignableFrom(element.getClass())) { return null; }
 
         return (Type) element;
     }
@@ -41,6 +44,21 @@ public final class Tuple {
     public int size() { return elements.length; }
 
     public boolean isEmpty() { return size() == 0; }
+
+    public Tuple copy() { return copy(this); }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(elements);
+    }
+
+    @Override
+    public boolean equals(final Object otherObject) {
+        if (this == otherObject) { return true; }
+        if (!(otherObject instanceof Tuple otherTuple)) { return false; }
+
+        return CollectionUtilities.sequenceEqual(elements, otherTuple.elements);
+    }
 
     @Override
     public String toString() {
@@ -69,9 +87,20 @@ public final class Tuple {
         elements[0] = firstElement;
         elements[1] = secondElement;
 
-        for (int i = 2, j = 0; i < elements.length || j < restOfTheElements.length; ++i, ++j) {
-            elements[i] = restOfTheElements[j];
-        }
+        System.arraycopy(restOfTheElements, 0, elements, 2, restOfTheElements.length);
+
+        return new Tuple(elements);
+    }
+
+    /**
+     * Create a deep copy of the given tuple.
+     * @param tuple Tuple to be copied.
+     * @return A deep copy of the given tuple.
+     */
+    public static Tuple copy(final Tuple tuple) {
+        final var elements = new Object[tuple.size()];
+
+        System.arraycopy(tuple.elements, 0, elements, 0, tuple.size());
 
         return new Tuple(elements);
     }
