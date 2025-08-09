@@ -13,8 +13,7 @@
 
     <properties>
         <java.version>24</java.version>
-        <maven.compiler.source>${java.version}</maven.compiler.source>
-        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <maven.compiler.release>${java.version}</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <main.class />      <!-- this property must be defined in child modules that have maven-assembly-plugin enabled -->
