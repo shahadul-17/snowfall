@@ -12,6 +12,7 @@ public final class Configuration implements JsonSerializable {
     private String applicationName;
     private String profile;
     private String uniqueValue;
+    private long processId;
     private VirtualThreadSchedulerConfiguration virtualThreadScheduler;
 
     public boolean shallIncludeStackTrace() {
@@ -90,6 +91,16 @@ public final class Configuration implements JsonSerializable {
 
     public Configuration setUniqueValue(final String uniqueValue) {
         this.uniqueValue = uniqueValue;
+
+        return this;
+    }
+
+    public long getProcessId() {
+        return processId;
+    }
+
+    public Configuration setProcessId(final long processId) {
+        this.processId = processId;
 
         return this;
     }

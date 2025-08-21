@@ -185,6 +185,9 @@ public final class ConfigurationProvider {
             throw new Exception("Configuration could not be loaded. Please check previous logs for more details.");
         }
 
+        // assigning the current process ID to the configuration...
+        configuration.setProcessId(ProcessHandle.current().pid());
+
         // this method shall overwrite the configuration values
         // from command-line arguments...
         configuration = overwriteConfigurationFromArguments(configuration);
