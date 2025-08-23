@@ -227,4 +227,10 @@ public final class CollectionUtilities {
 
         return keyValuePairs;
     }
+
+    public static <KeyType, ValueType> Map<KeyType, ValueType> createHashMap(final int expectedElementCount) {
+        final var initialCapacity = (int) (expectedElementCount / 0.75f) + 1;
+
+        return new HashMap<>(initialCapacity);
+    }
 }
