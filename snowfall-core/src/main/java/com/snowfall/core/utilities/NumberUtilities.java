@@ -4,6 +4,9 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 public final class NumberUtilities {
 
     private static final Logger logger = LogManager.getLogger(NumberUtilities.class);
@@ -106,5 +109,58 @@ public final class NumberUtilities {
 
         // returns the numeric value...
         return numericValue;
+    }
+
+    private static <Type> Number getValueAsNumberOrNull(final Object value, final Class<Type> classOfType) {
+        if (!Number.class.isAssignableFrom(classOfType)) { return null; }
+        if (value instanceof Number number) { return number; }
+        if (!(value instanceof String valueAsString)) { return null; }
+
+        final var sanitizedValueAsString = StringUtilities.getDefaultIfNullOrWhiteSpace(
+                valueAsString, StringUtilities.getEmptyString(), true);
+
+        if (StringUtilities.isEmpty(sanitizedValueAsString)) { return null; }
+
+        try {
+            if (classOfType == Byte.class
+                    || classOfType == Short.class
+                    || classOfType == Integer.class
+                    || classOfType == Long.class) {
+                return Long.parseLong(sanitizedValueAsString);
+            } else if (classOfType == Float.class || classOfType == Double.class || classOfType == Number.class) {
+                return Double.parseDouble(sanitizedValueAsString);
+            } else if (classOfType == BigInteger.class) {
+                return new BigInteger(sanitizedValueAsString);
+            } else if (classOfType == BigDecimal.class) {
+                return new BigDecimal(sanitizedValueAsString);
+            }
+        } catch (final NumberFormatException exception) { return null; }
+
+        return null;
+    }
+
+    public static <Type> Type cast(final Object value, final Class<Type> classOfType) {
+        final var number = getValueAsNumberOrNull(value, classOfType);
+
+        if (number == null) { return null; }
+        if (classOfType == Number.class) { return classOfType.cast(number); }
+        if (classOfType == Byte.class) { return classOfType.cast(number.byteValue()); }
+        if (classOfType == Short.class) { return classOfType.cast(number.shortValue()); }
+        if (classOfType == Integer.class) { return classOfType.cast(number.intValue()); }
+        if (classOfType == Long.class) { return classOfType.cast(number.longValue()); }
+        if (classOfType == Float.class) { return classOfType.cast(number.floatValue()); }
+        if (classOfType == Double.class) { return classOfType.cast(number.doubleValue()); }
+        if (classOfType == BigInteger.class) {
+            return number instanceof BigInteger
+                    ? classOfType.cast(number)
+                    : classOfType.cast(BigInteger.valueOf(number.longValue()));
+        }
+        if (classOfType == BigDecimal.class) {
+            return number instanceof BigDecimal
+                    ? classOfType.cast(number)
+                    : classOfType.cast(BigDecimal.valueOf(number.doubleValue()));
+        }
+
+        return null;
     }
 }

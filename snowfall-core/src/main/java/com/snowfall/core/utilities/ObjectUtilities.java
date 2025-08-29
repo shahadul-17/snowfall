@@ -48,4 +48,51 @@ public final class ObjectUtilities {
         // finally, we shall return the object...
         return object;
     }
+
+    public static <Type> Type cast(final Object value, final Class<Type> classOfType) {
+        // if the value is null, we shall return the default value...
+        if (value == null) { return null; }
+        // performing a type cast if the value is an instance of the class...
+        if (classOfType.isInstance(value)) { return classOfType.cast(value); }
+
+        // if the value is a number, we shall attempt to cast the value
+        // to the expected type...
+        final var valueAsNumber = NumberUtilities.cast(value, classOfType);
+
+        // if the value is successfully cast to the expected type, we shall return it...
+        if (valueAsNumber != null) { return valueAsNumber; }
+        // performing a type cast if the expected type is boolean...
+        if (classOfType == Boolean.class) { return convertBoolean(value, classOfType); }
+        // if the expected type is string, we shall attempt to convert the value to a string and return it as a string...
+        if (classOfType == String.class) { return classOfType.cast(value.toString()); }
+
+        return null;
+    }
+
+    private static <Type> Type convertBoolean(final Object value, final Class<Type> classOfType) {
+        if (value instanceof Boolean) { return classOfType.cast(value); }
+        if (value instanceof String valueAsString) {
+            final var sanitizedValueAsString = StringUtilities.getDefaultIfNullOrWhiteSpace(
+                    valueAsString, StringUtilities.getEmptyString(), true);
+
+            if ("true".equalsIgnoreCase(sanitizedValueAsString)
+                    || "false".equalsIgnoreCase(sanitizedValueAsString)) {
+                return classOfType.cast(Boolean.valueOf(sanitizedValueAsString));
+            }
+
+            final var valueAsNumber = NumberUtilities.cast(valueAsString, Number.class);
+
+            // checking if the value is successfully cast as a number...
+            if (valueAsNumber != null) {
+                // NOTE: ANY VALUE LESS THAN OR EQUAL TO ZERO (0) IS CONSIDERED FALSE AND NON-ZERO IS CONSIDERED TRUE...!!!
+                return classOfType.cast(valueAsNumber.intValue() > 0);
+            }
+        }
+        if (value instanceof Number valueAsNumber) {
+            // NOTE: ANY VALUE LESS THAN OR EQUAL TO ZERO (0) IS CONSIDERED FALSE AND NON-ZERO IS CONSIDERED TRUE...!!!
+            return classOfType.cast(valueAsNumber.intValue() > 0);
+        }
+
+        return classOfType.cast(value);
+    }
 }

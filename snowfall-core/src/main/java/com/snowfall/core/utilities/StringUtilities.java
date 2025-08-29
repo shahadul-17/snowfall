@@ -17,11 +17,11 @@ public final class StringUtilities {
 
     public static String[] getEmptyStringArray() { return EMPTY_STRING_ARRAY; }
 
-    public static boolean isNull(String text) {
+    public static boolean isNull(final String text) {
         return text == null;
     }
 
-    public static boolean isEmpty(String text) {
+    public static boolean isEmpty(final String text) {
         return getEmptyString().equals(text);
     }
 

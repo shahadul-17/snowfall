@@ -60,15 +60,15 @@ class UidGeneratorImpl implements UidGenerator {
             // we shall append the unique value to the string builder...
             uidBuilder
                     .append(uniqueValue)
-                    .append(SymbolCharacter.HYPHEN.getValue());
+                    .append(SymbolCharacter.HYPHEN.value());
         }
 
         // appending all the values to prepare a unique ID...
         uidBuilder
                 .append(currentTimeInMilliseconds)
-                .append(SymbolCharacter.HYPHEN.getValue())
+                .append(SymbolCharacter.HYPHEN.value())
                 .append(count)
-                .append(SymbolCharacter.HYPHEN.getValue())
+                .append(SymbolCharacter.HYPHEN.value())
                 .append(randomValue);
 
         // lastly, we shall return the unique ID...
