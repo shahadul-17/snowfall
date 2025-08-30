@@ -102,7 +102,7 @@ public final class JsonSerializer {
         return deserialize(json, classOfType);
     }
 
-    private static <Type> Type deserialize(final String json, final TypeReference<Type> typeReference) {
+    public static <Type> Type deserialize(final String json, final TypeReference<Type> typeReference) {
         try {
             return _deserialize(json, typeReference);
         } catch (final Exception exception) {
