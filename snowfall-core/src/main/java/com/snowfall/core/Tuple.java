@@ -22,23 +22,23 @@ public final class Tuple {
         this.elements = elements;
     }
 
-    @SuppressWarnings(value = "unchecked")
     public <Type> Type get(final int elementPosition) {
-        final var element = get(elementPosition, Object.class);
+        return get(elementPosition, null);
+    }
+
+    @SuppressWarnings(value = "unchecked")
+    public <Type> Type get(final int elementPosition, final Type defaultValue) {
+        final var element = get(elementPosition, defaultValue, Object.class);
 
         return (Type) element;
     }
 
-    @SuppressWarnings(value = "unchecked")
-    public <Type> Type get(final int elementPosition, final Class<Type> classOfType) {
-        if (elementPosition < 1 || elementPosition > elements.length) { return null; }
+    public <Type> Type get(final int elementPosition, final Type defaultValue, final Class<Type> classOfType) {
+        if (elementPosition < 1 || elementPosition > elements.length) { return defaultValue; }
 
-        final var element = elements[elementPosition - 1];
+        final var element = ObjectUtilities.cast(elements[elementPosition - 1], classOfType);
 
-        // if the element is null or the class of type is null or the type mismatches, we shall return null...
-        if (element == null || classOfType == null || !classOfType.isAssignableFrom(element.getClass())) { return null; }
-
-        return (Type) element;
+        return element == null ? defaultValue : element;
     }
 
     public int size() { return elements.length; }
