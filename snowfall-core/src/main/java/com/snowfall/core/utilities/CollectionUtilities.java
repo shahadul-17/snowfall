@@ -1,5 +1,6 @@
 package com.snowfall.core.utilities;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
@@ -234,5 +235,49 @@ public final class CollectionUtilities {
         final var initialCapacity = (int) (expectedElementCount / 0.75f) + 1;
 
         return new HashMap<>(initialCapacity);
+    }
+
+    public static <Type> Type find(final int index, final Collection<Type> collection) {
+        if (index < 0 || collection == null || collection.isEmpty() || index >= collection.size()) { return null; }
+        if (collection instanceof List<?>) { return ((List<Type>) collection).get(index); }
+
+        final var iterator = collection.iterator();
+
+        for (var i = 0; i < index; ++i) { iterator.next(); }
+
+        return iterator.next();
+    }
+
+    /**
+     * Converts an input object to array an array of objects if it is an array.
+     * @param object The input object to be converted into an Object array; must be an array.
+     * @return an Object array containing the elements of the input array, or null if the input
+     * object is null or not an array.
+     */
+    public static Object[] toArray(final Object object) {
+        if (object == null || !object.getClass().isArray()) { return null; }
+
+        final var length = java.lang.reflect.Array.getLength(object);
+        final var elements = new Object[length];
+
+        for (var i = 0; i < length; ++i) {
+            elements[i] = java.lang.reflect.Array.get(object, i);
+        }
+
+        return elements;
+    }
+
+    /**
+     * Converts an input object, which is an array, into a list of objects.
+     * @param object The input object to be converted into a List; must represent an array.
+     * @return A List containing the elements of the input array, or null if the input
+     * object is null or not an array.
+     */
+    public static List<?> toList(final Object object) {
+        if (object instanceof List<?> list) { return list; }
+
+        final var elements = toArray(object);
+
+        return elements == null ? null : Arrays.asList(elements);
     }
 }

@@ -22,6 +22,7 @@ public interface DynamicObject extends JsonSerializable {
 	boolean isEmptyDynamicObject();
 	boolean isImmutable();
 	DynamicObject immutable();
+	Object getValue(final String key);
 
 	/**
 	 * Returns the underlying mutable map.
@@ -46,24 +47,12 @@ public interface DynamicObject extends JsonSerializable {
 
 	default Map<String, Object> get() { return copy().asMap(); }
 
-	private Object getValue(final String key) {
-		return isEmptyDynamicObject() || StringUtilities.isNull(key)
-				? null
-				: asMap().get(key);
-	}
-
 	@SuppressWarnings(value = "unchecked")
-	default <Type> Type get(final String key) { return (Type) getValue(key); }
+	default <Type> Type get(final String key) { return (Type) get(key, Object.class, null); }
 
-	default <Type> Type get(final String key, final Type defaultValue) {
-		final Type value = get(key);
+	default <Type> Type get(final String key, final Class<Type> classOfType) { return get(key, classOfType, null); }
 
-		return value == null ? defaultValue : value;
-	}
-
-	default <Type> Type get(final String key, final Type defaultValue, final Class<Type> classOfType) {
-		if (classOfType == null) { return get(key, defaultValue); }
-
+	default <Type> Type get(final String key, final Class<Type> classOfType, final Type defaultValue) {
 		// retrieving the value associated with the key...
 		final var value = ObjectUtilities.cast(getValue(key), classOfType);
 
@@ -73,51 +62,51 @@ public interface DynamicObject extends JsonSerializable {
 
 	default Boolean getBoolean(final String key) { return getBoolean(key, null); }
 
-	default Boolean getBoolean(final String key, final Boolean defaultValue) { return get(key, defaultValue, Boolean.class); }
+	default Boolean getBoolean(final String key, final Boolean defaultValue) { return get(key, Boolean.class, defaultValue); }
 
 	default Byte getByte(final String key) { return getByte(key, null); }
 
-	default Byte getByte(final String key, final Byte defaultValue) { return get(key, defaultValue, Byte.class); }
+	default Byte getByte(final String key, final Byte defaultValue) { return get(key, Byte.class, defaultValue); }
 
 	default Short getShort(final String key) { return getShort(key, null); }
 
-	default Short getShort(final String key, final Short defaultValue) { return get(key, defaultValue, Short.class); }
+	default Short getShort(final String key, final Short defaultValue) { return get(key, Short.class, defaultValue); }
 
 	default Integer getInteger(final String key) { return getInteger(key, null); }
 
-	default Integer getInteger(final String key, final Integer defaultValue) { return get(key, defaultValue, Integer.class); }
+	default Integer getInteger(final String key, final Integer defaultValue) { return get(key, Integer.class, defaultValue); }
 
 	default Long getLong(final String key) { return getLong(key, null); }
 
-	default Long getLong(final String key, final Long defaultValue) { return get(key, defaultValue, Long.class); }
+	default Long getLong(final String key, final Long defaultValue) { return get(key, Long.class, defaultValue); }
 
 	default BigInteger getBigInteger(final String key) { return getBigInteger(key, null); }
 
-	default BigInteger getBigInteger(final String key, final BigInteger defaultValue) { return get(key, defaultValue, BigInteger.class); }
+	default BigInteger getBigInteger(final String key, final BigInteger defaultValue) { return get(key, BigInteger.class, defaultValue); }
 
 	default Float getFloat(final String key) { return getFloat(key, null); }
 
-	default Float getFloat(final String key, final Float defaultValue) { return get(key, defaultValue, Float.class); }
+	default Float getFloat(final String key, final Float defaultValue) { return get(key, Float.class, defaultValue); }
 
 	default Double getDouble(final String key) { return getDouble(key, null); }
 
-	default Double getDouble(final String key, final Double defaultValue) { return get(key, defaultValue, Double.class); }
+	default Double getDouble(final String key, final Double defaultValue) { return get(key, Double.class, defaultValue); }
 
 	default BigDecimal getBigDecimal(final String key) { return getBigDecimal(key, null); }
 
-	default BigDecimal getBigDecimal(final String key, final BigDecimal defaultValue) { return get(key, defaultValue, BigDecimal.class); }
+	default BigDecimal getBigDecimal(final String key, final BigDecimal defaultValue) { return get(key, BigDecimal.class, defaultValue); }
 
 	default Number getNumber(final String key) { return getNumber(key, null); }
 
-	default Number getNumber(final String key, final Number defaultValue) { return get(key, defaultValue, Number.class); }
+	default Number getNumber(final String key, final Number defaultValue) { return get(key, Number.class, defaultValue); }
 
 	default Character getCharacter(final String key) { return getCharacter(key, null); }
 
-	default Character getCharacter(final String key, final Character defaultValue) { return get(key, defaultValue, Character.class); }
+	default Character getCharacter(final String key, final Character defaultValue) { return get(key, Character.class, defaultValue); }
 
 	default String getString(final String key) { return getString(key, null); }
 
-	default String getString(final String key, final String defaultValue) { return get(key, defaultValue, String.class); }
+	default String getString(final String key, final String defaultValue) { return get(key, String.class, defaultValue); }
 
 	default <Type> DynamicObject set(final String key, final Type value) {
 		if (isEmptyDynamicObject() || isImmutable() || StringUtilities.isNull(key)) { return this; }
@@ -214,7 +203,7 @@ public interface DynamicObject extends JsonSerializable {
 		return DynamicObjectImpl.create(expectedElementCount, loadFactor);
 	}
 
-	static DynamicObject empty() { return create(-1); }
+	static DynamicObject empty() { return DynamicObjectImpl.empty(); }
 
 	static DynamicObject fromMap(final Map<String, Object> map) {
 		if (map == null || map.isEmpty()) { return create(); }

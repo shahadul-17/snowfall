@@ -50,8 +50,8 @@ public final class ObjectUtilities {
     }
 
     public static <Type> Type cast(final Object value, final Class<Type> classOfType) {
-        // if the value is null, we shall return the default value...
-        if (value == null) { return null; }
+        // if the value is null or the class of type is null, we shall return the default value...
+        if (value == null || classOfType == null) { return null; }
         // performing a type cast if the value is an instance of the class...
         if (classOfType.isInstance(value)) { return classOfType.cast(value); }
 
@@ -66,7 +66,9 @@ public final class ObjectUtilities {
         // if the expected type is string, we shall attempt to convert the value to a string and return it as a string...
         if (classOfType == String.class) { return classOfType.cast(value.toString()); }
 
-        return null;
+        final var valueAsJson = JsonSerializer.serialize(value, false);
+
+        return JsonSerializer.deserialize(valueAsJson, classOfType);
     }
 
     private static <Type> Type convertBoolean(final Object value, final Class<Type> classOfType) {
