@@ -48,8 +48,6 @@ public final class Tuple implements JsonSerializable {
     }
 
     public <Type> Type get(final int elementPosition, final Type defaultValue, final Class<Type> classOfType) {
-        if (classOfType == null) { return get(elementPosition, defaultValue); }
-
         final var element = ObjectUtilities.cast(getElement(elementPosition), classOfType);
 
         // if the element is null, we shall return the default value...
